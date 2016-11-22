@@ -24,12 +24,10 @@ App.questions = App.cable.subscriptions.create({ channel: "QuestionsChannel"}, {
                 // var c = data["question"]["id"];
                 var userName = data["user"]["fb_name"]
                 var container = $("#table");
-                var elm = "<tr>";
-
-
+                var elm = "<tr data-questionid='" + questionId + "'>";
                 //elm += "<td id='count_question_" + questionId + "'>"+userCount+"</td>";
-                elm += "<td id='count_question_" + questionId + "'><div class='progress-ring' data-percent='" + userCount + "'></div></td>";
-                console.log(userCount);
+                elm += "<td id='count_question_" + questionId + "' class='user_count_td'><div class='progress-ring' data-percent='" + userCount + "'></div></td>";
+                console.log(elm);
                 elm += "<td class='live_talk_r'>";
                 elm += "<img class='imggg2' src='" + userImg + "'>";
                 elm += "<span>" + userName + ":" +"</span><br>";
@@ -60,6 +58,7 @@ App.questions = App.cable.subscriptions.create({ channel: "QuestionsChannel"}, {
                 var questionId = data["question"]["id"] //1770
                 var count = data["question"]["users_count"];
                 updateLikeCount(questionId, count);
+                sorting('des');
                 // $("#count_question_" + jqueryDomId).html("<div class='progress-ring' data-percent='" + count + "'></div><script> $('.progress-ring').loadingRing(); </script>");
             }
 
@@ -93,6 +92,7 @@ function setLike(questionId, userId) {
             console.log('set_Like success!!', questionId);
             var count = data["question"]["users_count"]
             updateLikeCount(questionId, count);
+            sorting('des');
         },
         error: function(message) {
             console.log('set_Like error!!', message);
@@ -104,4 +104,24 @@ function updateLikeCount(questionId, count){
     $("#count_question_" + questionId).html("<div class='progress-ring' data-percent='" + count + "'></div><script> $('.progress-ring').loadingRing(); </script>");
 }
 
-
+function sorting(orderIndex){
+    orderIndex = orderIndex || "asc"; // ascend, descend
+    console.log('sort', orderIndex);
+    var viewList = [];
+    $("table#live_talk_table tr").each(function(i,e){
+        var p = $(this).find(".user_count_td .progress-ring").data("percent");
+        viewList.push({
+            count: $(this).find(".user_count_td .progress-ring").data("percent"),
+            id: $(e).data('questionid'),
+            view: $(e)
+        });
+    });
+    if(orderIndex == "asc"){
+        viewList.sort(function(a, b){ return a.count - b.count;});
+    }else if(orderIndex=="des"){
+        viewList.sort(function(a, b){ return b.count - a.count;});
+    }
+    viewList.forEach(function(e){
+        $("table#live_talk_table").append(e.view);
+    });
+}

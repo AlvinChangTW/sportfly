@@ -65,8 +65,8 @@ window.live_show_id = <%= @live_show.id %>
                             <div id="live_talk_word" class="live_talk_word">
                                 <table id="live_talk_table" class="table">
                                     <% @live_show.questions.all.order("users_count DESC").each do |m| %>
-                                        <tr>
-                                            <td id="count_question_<%=m.id%>">
+                                        <tr data-questionid="<%= m.id %>">
+                                            <td id="count_question_<%=m.id%>" class="user_count_td">
                                                 <div class="progress-ring" data-percent="<%=m.users_count%>"></div>
                                             </td>
                                                 <!-- <td><%=m.users_count%></td> -->
@@ -161,7 +161,6 @@ window.live_show_id = <%= @live_show.id %>
 </div>
     <!-- <script src="/ccc/js/jquery-2.1.1.min.js"></script> -->
     <!-- <script src="/ccc/js/progress-ring.js"></script> -->
-<!-- <script type="text/javascript" src="/sort/stupidtable.js"></script> -->
 <script type="text/javascript">
     $(".container").on("click", ".like_btn_box", function(e){
         e.preventDefault(); e.stopPropagation();
@@ -186,5 +185,3 @@ $(".progress-ring").loadingRing();
  js.src = "//connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v2.8&appId=636280343220058";
  fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
-
-
